@@ -23,6 +23,6 @@ public class CardDetailsServiceImpl implements CardDetailsService {
     @Override
     public void deleteCard(Long pan) {
         CardDetails card = repository.findByCardPanReference(pan).orElseThrow(() -> new ResourceNotFoundException("Card", "number"));
-        repository.deleteByPan(pan);
+        repository.deleteByCardPanReference(pan);
     }
 }

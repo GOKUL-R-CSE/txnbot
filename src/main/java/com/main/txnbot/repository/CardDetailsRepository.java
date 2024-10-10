@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface CardDetailsRepository extends JpaRepository<CardDetails, Long> {
     Optional<CardDetails> findByCardPanReference(Long cardPanReference);
 
-    void deleteByPan(Long pan);
+    void deleteByCardPanReference(Long pan);
 }

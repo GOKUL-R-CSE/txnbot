@@ -16,7 +16,7 @@ public class CardDetailsController {
     @Autowired
     private CardDetailsService service;
 
-    @PostMapping("/")
+    @PostMapping("/addCard")
     public ResponseEntity<CardDetails> addCard(
             @Validated
             @RequestBody CardDetails cardDetails
@@ -25,7 +25,7 @@ public class CardDetailsController {
         return new ResponseEntity<CardDetails>(cardDetails, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{pan}")
+    @DeleteMapping("/deleteCard/{pan}")
     public ResponseEntity<String> deleteCard(
             @PathVariable(name = "pan") Long pan
     ){

@@ -14,7 +14,7 @@ public class ClientsController {
     @Autowired
     private ClientsService service;
 
-    @PostMapping("/")
+    @PostMapping("/addClient")
     public ResponseEntity<Clients> addClient(
             @Validated
             @RequestBody Clients clients
@@ -23,7 +23,7 @@ public class ClientsController {
         return new ResponseEntity<Clients>(client, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{email}")
+    @DeleteMapping("/deleteClient/{email}")
     public ResponseEntity<String> deleteClient(
             @PathVariable(name = "email") String email
     ){
@@ -31,7 +31,7 @@ public class ClientsController {
         return new ResponseEntity<String>("Client deleted successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/{email}/{password}")
+    @GetMapping("/getClient/{email}/{password}")
     public ResponseEntity<Clients> getClient(
             @PathVariable(name = "email") String email,
             @PathVariable(name = "password") String password
@@ -40,7 +40,7 @@ public class ClientsController {
         return new ResponseEntity<Clients>(client, HttpStatus.FOUND);
     }
 
-    @PutMapping("/{email}")
+    @PutMapping("/updateClient/{email}")
     public ResponseEntity<Clients> updateClient(
             @PathVariable(name = "email") String email,
             @RequestBody Clients client
