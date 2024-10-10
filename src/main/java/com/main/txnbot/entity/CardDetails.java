@@ -21,7 +21,7 @@ public class CardDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardPanReference;
-    private LocalDate cardExpiryDate;
+    private String cardExpiryDate;
     private String cardScheme;
     private String cardHolderName;
     private int cvv;
