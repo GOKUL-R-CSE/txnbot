@@ -10,6 +10,9 @@ import com.main.txnbot.service.ClientCardDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
 
@@ -21,7 +24,7 @@ public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
 
     @Override
     public CardDetails addCard(CardDetails cardDetails, String email) {
-        Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceAlreadyExistsException("Client", "this email"));
+        Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         CardDetails card = cardDetailsRepository.findByCardPanReference(cardDetails.getCardPanReference()).orElseThrow(() -> new ResourceAlreadyExistsException("Card", "number"));
         client.getCardDetails().add(cardDetails);
         return cardDetailsRepository.save(cardDetails);
@@ -36,5 +39,25 @@ public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
         }
         client.getCardDetails().remove(card);
         cardDetailsRepository.delete(card);
+    }
+
+    @Override
+    public List<CardDetails> getCardDetails(String email) {
+        Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
+        List<CardDetails> cardDetails = new ArrayList<>(client.getCardDetails());
+        if (cardDetails.isEmpty()){
+            throw new ResourceNotFoundException("Card details", "for this client");
+        }
+        return cardDetails;
+    }
+
+    @Override
+    public CardDetails getCardDetail(String email, Long pan) {
+        Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
+        CardDetails card = cardDetailsRepository.findByCardPanReference(pan).orElseThrow(() -> new ResourceNotFoundException("Card", "number"));
+        if (!client.getCardDetails().contains(card)) {
+            throw new ResourceNotFoundException("Card details", "specific reference");
+        }
+        return card;
     }
 }

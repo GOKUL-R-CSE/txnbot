@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ClientCardDetailsController {
 
@@ -31,5 +33,22 @@ public class ClientCardDetailsController {
     ){
         service.deleteCard(pan, email);
         return new ResponseEntity<String>("Card deleted successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/{email}/getCardDetails")
+    public ResponseEntity<List<CardDetails>> getCardDetails(
+            @PathVariable(name = "email") String email
+    ){
+        List<CardDetails> cardDetails = service.getCardDetails(email);
+        return new ResponseEntity<List<CardDetails>>(cardDetails, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{email}/{pan}/getCardDetail")
+    public ResponseEntity<CardDetails> getCardDetail(
+            @PathVariable(name = "email") String email,
+            @PathVariable(name = "pan") Long pan
+    ){
+        CardDetails cardDetail = service.getCardDetail(email, pan);
+        return new ResponseEntity<CardDetails>(cardDetail, HttpStatus.FOUND);
     }
 }
