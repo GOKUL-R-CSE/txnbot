@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -20,8 +22,8 @@ import java.util.List;
 public class Transactions {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionReference;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID transactionReference;
 
     private String transactionCategory;
     private String terminalCategory;
@@ -34,11 +36,11 @@ public class Transactions {
     private String transactionStatus;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "client_transactions",
-            joinColumns = @JoinColumn( name = "transactionReference" ),
+            joinColumns = @JoinColumn( name = "transaction_id" ),
             inverseJoinColumns = @JoinColumn( name = "client_id" )
     )
-    private Clients clients;
+    private List<Clients> clients = new ArrayList<>();
 }

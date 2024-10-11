@@ -9,9 +9,11 @@ import com.main.txnbot.repository.ClientsRepository;
 import com.main.txnbot.service.ClientCardDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
@@ -22,16 +24,23 @@ public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
     @Autowired
     private ClientsRepository clientsRepository;
 
+
+    @Transactional
     @Override
     public CardDetails addCard(CardDetails cardDetails, String email) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
-        CardDetails card = cardDetailsRepository.findByCardPanReference(cardDetails.getCardPanReference()).orElseThrow(() -> new ResourceAlreadyExistsException("Card", "number"));
-        client.getCardDetails().add(cardDetails);
-        return cardDetailsRepository.save(cardDetails);
+        if (cardDetailsRepository.existsByCardPanReference(cardDetails.getCardPanReference())) {
+            throw new ResourceAlreadyExistsException("Card", "number");
+        }
+//        client.getCardDetails().add(cardDetails);
+        cardDetails.getClients().add(client);
+        CardDetails savedCardDetails = cardDetailsRepository.save(cardDetails);
+//        clientsRepository.save(client);
+        return savedCardDetails;
     }
 
     @Override
-    public void deleteCard(Long pan, String email) {
+    public void deleteCard(UUID pan, String email) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         CardDetails card = cardDetailsRepository.findByCardPanReference(pan).orElseThrow(() -> new ResourceNotFoundException("Card", "number"));
         if (!client.getCardDetails().contains(card)) {
@@ -52,7 +61,7 @@ public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
     }
 
     @Override
-    public CardDetails getCardDetail(String email, Long pan) {
+    public CardDetails getCardDetail(String email, UUID pan) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         CardDetails card = cardDetailsRepository.findByCardPanReference(pan).orElseThrow(() -> new ResourceNotFoundException("Card", "number"));
         if (!client.getCardDetails().contains(card)) {

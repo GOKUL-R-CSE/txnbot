@@ -3,7 +3,9 @@ package com.main.txnbot.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -25,9 +27,9 @@ public class Clients {
     private String ifsc;
     private Long phoneNumber;
 
-    @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private Set<Transactions> transactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private Set<CardDetails> cardDetails = new HashSet<>();
 }

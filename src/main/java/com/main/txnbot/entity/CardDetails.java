@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +21,9 @@ import java.util.List;
 public class CardDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardPanReference;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID cardPanReference;
+
     private String cardExpiryDate;
     private String cardScheme;
     private String cardHolderName;
@@ -28,11 +31,11 @@ public class CardDetails {
     private String cardType;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "client_card_details",
-            joinColumns = @JoinColumn( name = "cardPanReference" ),
+            joinColumns = @JoinColumn( name = "card_id" ),
             inverseJoinColumns = @JoinColumn( name = "client_id" )
     )
-    private Clients clients;
+    private List<Clients> clients = new ArrayList<>();
 }

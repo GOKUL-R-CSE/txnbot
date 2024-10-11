@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class ClientCardDetailsController {
@@ -28,7 +29,7 @@ public class ClientCardDetailsController {
 
     @DeleteMapping("/deleteCard/{email}/{pan}")
     public ResponseEntity<String> deleteCard(
-            @PathVariable(name = "pan") Long pan,
+            @PathVariable(name = "pan") UUID pan,
             @PathVariable(name = "email") String email
     ){
         service.deleteCard(pan, email);
@@ -46,7 +47,7 @@ public class ClientCardDetailsController {
     @GetMapping("/{email}/{pan}/getCardDetail")
     public ResponseEntity<CardDetails> getCardDetail(
             @PathVariable(name = "email") String email,
-            @PathVariable(name = "pan") Long pan
+            @PathVariable(name = "pan") UUID pan
     ){
         CardDetails cardDetail = service.getCardDetail(email, pan);
         return new ResponseEntity<CardDetails>(cardDetail, HttpStatus.FOUND);

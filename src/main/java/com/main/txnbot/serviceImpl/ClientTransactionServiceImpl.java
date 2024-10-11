@@ -9,10 +9,12 @@ import com.main.txnbot.repository.TransactionsRepository;
 import com.main.txnbot.service.ClientTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ClientTransactionServiceImpl implements ClientTransactionService {
@@ -27,9 +29,14 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     @Override
     public Transactions addTransaction(Transactions transactions, String email) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
-        Transactions transaction = transactionsRepository.findByTransactionReference(transactions.getTransactionReference()).orElseThrow(() -> new ResourceAlreadyExistsException("Transaction", "reference"));
-        client.getTransactions().add(transaction);
-        return transactionsRepository.save(transactions);
+        if (transactionsRepository.existsByTransactionReference(transactions.getTransactionReference())) {
+            throw new ResourceAlreadyExistsException("Transaction", "reference");
+        }
+//        client.getTransactions().add(transactions);
+        transactions.getClients().add(client);
+        Transactions savedTransaction = transactionsRepository.save(transactions);
+//        clientsRepository.save(client);
+        return savedTransaction;
     }
 
     @Override
@@ -43,7 +50,7 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     }
 
     @Override
-    public Transactions getTransaction(String email, Long reference) {
+    public Transactions getTransaction(String email, UUID reference) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         Transactions transaction = transactionsRepository.findByTransactionReference(reference).orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference"));
         if (!client.getTransactions().contains(transaction)) {
@@ -53,7 +60,7 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     }
 
     @Override
-    public List<LocalDateTime> getDate(String email, Long reference) {
+    public List<LocalDateTime> getDate(String email, UUID reference) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         Transactions transaction = transactionsRepository.findByTransactionReference(reference).orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference"));
         List<LocalDateTime> date = new ArrayList<>();
@@ -66,7 +73,7 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     }
 
     @Override
-    public List<String> getCurrency(String email, Long reference) {
+    public List<String> getCurrency(String email, UUID reference) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         Transactions transaction = transactionsRepository.findByTransactionReference(reference).orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference"));
         List<String> currency = new ArrayList<>();
@@ -79,7 +86,7 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     }
 
     @Override
-    public String getStatus(String email, Long reference) {
+    public String getStatus(String email, UUID reference) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         Transactions transaction = transactionsRepository.findByTransactionReference(reference).orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference"));
         String status = "";
@@ -91,7 +98,7 @@ public class ClientTransactionServiceImpl implements ClientTransactionService {
     }
 
     @Override
-    public List<String> getCategory(String email, Long reference) {
+    public List<String> getCategory(String email, UUID reference) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
         Transactions transaction = transactionsRepository.findByTransactionReference(reference).orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference"));
         List<String> category = new ArrayList<>();
