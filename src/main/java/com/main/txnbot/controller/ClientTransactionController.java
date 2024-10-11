@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,4 +43,40 @@ public class ClientTransactionController {
         Transactions transactions = service.getTransaction(email, reference);
         return new ResponseEntity<Transactions>(transactions, HttpStatus.FOUND);
     }
+
+    @GetMapping("/{email}/{reference}/getDate")
+    public ResponseEntity<List<LocalDateTime>> getDate(
+            @PathVariable(name = "email") String email,
+            @PathVariable(name = "reference") Long reference
+    ){
+        List<LocalDateTime> date = service.getDate(email, reference);
+        return new ResponseEntity<List<LocalDateTime>>(date, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{email}/{reference}/getCurrency")
+    public ResponseEntity<List<String>> getCurrency(
+            @PathVariable(name = "email") String email,
+            @PathVariable(name = "reference") Long reference
+    ){
+        List<String> currency = service.getCurrency(email, reference);
+        return new ResponseEntity<List<String>>(currency, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{email}/{reference}/getStatus")
+    public String getStatus(
+            @PathVariable(name = "email") String email,
+            @PathVariable(name = "reference") Long reference
+    ){
+        return service.getStatus(email, reference);
+    }
+
+    @GetMapping("/{email}/{reference}/getcategory")
+    public ResponseEntity<List<String>> getCategoey(
+            @PathVariable(name = "email") String email,
+            @PathVariable(name = "reference") Long reference
+    ){
+        List<String> category = service.getCategory(email, reference);
+        return new ResponseEntity<List<String>>(category, HttpStatus.FOUND);
+    }
+
 }
