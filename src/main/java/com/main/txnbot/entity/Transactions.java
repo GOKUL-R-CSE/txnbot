@@ -34,11 +34,11 @@ public class Transactions {
     private String transactionStatus;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(
             name = "client_transactions",
             joinColumns = @JoinColumn( name = "transactionReference" ),
             inverseJoinColumns = @JoinColumn( name = "client_id" )
     )
-    List<Clients> clients;
+    private Clients clients;
 }

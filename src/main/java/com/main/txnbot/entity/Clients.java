@@ -25,9 +25,9 @@ public class Clients {
     private String ifsc;
     private Long phoneNumber;
 
-    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private Set<Transactions> transactions = new HashSet<>();
 
-    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private Set<CardDetails> cardDetails = new HashSet<>();
 }

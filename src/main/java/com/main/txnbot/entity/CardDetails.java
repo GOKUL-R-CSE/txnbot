@@ -28,11 +28,11 @@ public class CardDetails {
     private String cardType;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(
             name = "client_card_details",
             joinColumns = @JoinColumn( name = "cardPanReference" ),
             inverseJoinColumns = @JoinColumn( name = "client_id" )
     )
-    List<Clients> clients;
+    private Clients clients;
 }
