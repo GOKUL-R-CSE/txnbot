@@ -7,11 +7,13 @@ import com.main.txnbot.repository.ClientsRepository;
 import com.main.txnbot.service.ClientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ClientsServiceImpl implements ClientsService {
 
     @Autowired
@@ -32,7 +34,9 @@ public class ClientsServiceImpl implements ClientsService {
         if (client.isPresent()){
             repository.deleteByEmail(email);
         }
-        throw new ResourceNotFoundException("Client", "specified email");
+        else {
+            throw new ResourceNotFoundException("Client", "specified email");
+        }
     }
 
     @Override

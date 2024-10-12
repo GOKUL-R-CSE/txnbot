@@ -72,7 +72,7 @@ public class ClientTransactionController {
     }
 
     @GetMapping("/{email}/{reference}/getcategory")
-    public ResponseEntity<List<String>> getCategoey(
+    public ResponseEntity<List<String>> getCategory(
             @PathVariable(name = "email") String email,
             @PathVariable(name = "reference") UUID reference
     ){

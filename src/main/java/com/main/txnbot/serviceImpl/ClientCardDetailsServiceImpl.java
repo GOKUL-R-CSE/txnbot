@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
 
     @Autowired
@@ -25,7 +26,6 @@ public class ClientCardDetailsServiceImpl implements ClientCardDetailsService {
     private ClientsRepository clientsRepository;
 
 
-    @Transactional
     @Override
     public CardDetails addCard(CardDetails cardDetails, String email) {
         Clients client = clientsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Client", "this email"));
