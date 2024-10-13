@@ -1,5 +1,6 @@
 package com.main.txnbot.controller;
 
+import com.main.txnbot.dto.AuthResponse;
 import com.main.txnbot.entity.Clients;
 import com.main.txnbot.service.ClientsService;
 import com.main.txnbot.service.UserDetailsService;
@@ -28,11 +29,13 @@ public class ClientsController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> enterClient(
+    public ResponseEntity<AuthResponse> enterClient(
             @Validated
             @RequestBody Clients clients
     ){
-        return new ResponseEntity<String>(userDetailsService.verify(clients), HttpStatus.OK);
+        String token = userDetailsService.verify(clients);
+        AuthResponse response = new AuthResponse(clients, token);
+        return new ResponseEntity<AuthResponse>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteClient/{email}")
