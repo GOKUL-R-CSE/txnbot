@@ -2,6 +2,7 @@ package com.main.txnbot.controller;
 
 import com.main.txnbot.entity.Clients;
 import com.main.txnbot.service.ClientsService;
+import com.main.txnbot.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,24 @@ public class ClientsController {
     @Autowired
     private ClientsService service;
 
-    @PostMapping("/addClient")
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @PostMapping("/register")
     public ResponseEntity<Clients> addClient(
             @Validated
             @RequestBody Clients clients
     ){
-        Clients client = service.addClient(clients);
+        Clients client = userDetailsService.register(clients);
         return new ResponseEntity<Clients>(client, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> enterClient(
+            @Validated
+            @RequestBody Clients clients
+    ){
+        return new ResponseEntity<String>(userDetailsService.verify(clients), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteClient/{email}")
