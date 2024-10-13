@@ -1,6 +1,7 @@
 package com.main.txnbot.serviceImpl;
 
 import com.main.txnbot.entity.Clients;
+import com.main.txnbot.exception.ResourceAlreadyExistsException;
 import com.main.txnbot.repository.ClientsRepository;
 import com.main.txnbot.service.JWTService;
 import com.main.txnbot.service.UserDetailsService;
@@ -10,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -27,6 +30,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public Clients register(Clients user) {
+        Optional<Clients> client = repo.findByEmail(user.getEmail());
+        if (client.isPresent()){
+            throw new ResourceAlreadyExistsException("Client", "this email");
+        }
         user.setPassword(encoder.encode(user.getPassword()));
         repo.save(user);
         return user;
