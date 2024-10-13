@@ -2,6 +2,7 @@ package com.main.txnbot.serviceImpl;
 
 import com.main.txnbot.entity.Clients;
 import com.main.txnbot.exception.ResourceAlreadyExistsException;
+import com.main.txnbot.exception.ResourceNotFoundException;
 import com.main.txnbot.repository.ClientsRepository;
 import com.main.txnbot.service.JWTService;
 import com.main.txnbot.service.UserDetailsService;
@@ -41,6 +42,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public String verify(Clients user) {
+        Optional<Clients> existingClient = repo.findByEmail(user.getEmail());
+        if (existingClient.isEmpty()) {
+            throw new ResourceNotFoundException("Client", "email");
+        }
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(user.getEmail());
